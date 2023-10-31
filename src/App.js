@@ -2,8 +2,19 @@ import React, { useState, useEffect } from "react";
 import Pagination from "./components/Pagination/Pagination";
 import Search from "./components/search/Search";
 import DataTable from "./components/table/table";
+import Login from "./components/Login/Login";
+import Navbar from "./components/Navbar/Navbar";
+// import { useAuth } from "./AuthContext";
+import { AuthContext } from "./context";
+
+const getToken = () => {
+  let token = localStorage.getItem("token");
+  return token && token.trim() ? token : false;
+};
 
 function App() {
+  // const { setIsLoggedIn,isLoggedIn,setToken,token } = useAuth();
+
   const [query, setQuery] = useState("");
   const [fdata, setData] = useState([]);
 
@@ -43,10 +54,19 @@ function App() {
   const subset = search(fdata).slice(startIndex, endIndex);
   const disablePrevious = currentPage === 0;
   const disableNext = currentPage === totalPages - 1;
-
+  const [isLoggedin, setIsLoggedIn] = useState(getToken());
+  if (!isLoggedin) {
+    return (
+      <>
+        <Navbar setIsLoggedIn={setIsLoggedIn} />
+        <Login setIsLoggedIn={setIsLoggedIn} />
+      </>
+    );
+  }
 
   return (
-    <>
+    <AuthContext.Provider value={{ isLoggedin  }}>
+      <Navbar setIsLoggedIn={setIsLoggedIn} />
       <div className="second-container">
         <Search query={query} setQuery={setQuery} />
         <DataTable items={subset} />
@@ -58,7 +78,7 @@ function App() {
           disableNext={disableNext}
         />
       </div>
-    </>
+    </AuthContext.Provider>
   );
 }
 

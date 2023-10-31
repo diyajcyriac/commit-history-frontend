@@ -5,28 +5,31 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import History from "./components/commit_history/history";
 import "./styles.css";
 import Navbar from "./components/Navbar/Navbar";
-
-
+// import { AuthProvider } from "./AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
+  <>
+    <BrowserRouter>
       <Routes>
         <Route
           path="/"
           element={
             <>
-              <Navbar />
               <App />
             </>
           }
         />
-        <Route path="/history/:id" element={
+        <Route
+          path="/history/:id"
+          element={
             <>
               <Navbar />
               <History />
             </>
-          } />
+          }
+        />
       </Routes>
     </BrowserRouter>
+  </>
 );

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,6 +8,9 @@ import Typography from "@mui/material/Typography";
 import { FaList } from "react-icons/fa";
 import AddModal from "../modal/addproject_modal";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Logout from "../Buttons/NavbarButton";
+// import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -19,8 +21,11 @@ const darkTheme = createTheme({
 });
 
 const Navbar = () => {
+  const {IS_LOGGEDIN} = useAuth();
+  const isLoggedIn = true ;
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {JSON.stringify(auth)}
       <AppBar position="static">
         <Toolbar>
           <Link
@@ -40,9 +45,7 @@ const Navbar = () => {
             >
               <FaList />
             </IconButton>
-            </Link>
-          
-
+          </Link>
           <Typography
             variant="h6"
             noWrap
@@ -50,18 +53,18 @@ const Navbar = () => {
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
             <Link
-            style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-            to="/"
-          >
-            Project Log</Link>
+              style={{
+                textDecoration: "none",
+                color: "white",
+                cursor: "pointer",
+              }}
+              to="/"
+            >
+              Project Log
+            </Link>
           </Typography>
-          
-
-          <AddModal />
+          {IS_LOGGEDIN && <Logout/>}
+          {IS_LOGGEDIN && <AddModal />}
         </Toolbar>
       </AppBar>
     </Box>
