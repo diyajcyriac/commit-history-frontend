@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-const defaultTheme = createTheme({
-  palette: {
-    black: "#000000",
-  },
-});
+import { dispatchEvent } from "../../utils/event";
+import { useNavigate } from "react-router-dom";
+
 
 const Logout_button = styled("div")(({ theme }) => ({
   position: "relative",
@@ -47,13 +44,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Logout({setIsLoggedIn}) {
+  const navigate = useNavigate();
   
 
   const handleLogoutSubmit = () => {
-    localStorage.clear();
-    window.location.reload(false);
     setIsLoggedIn(false);
+    localStorage.clear();
+    dispatchEvent();
+    navigate('/');
+
   };
+  
 
   return (
     <>

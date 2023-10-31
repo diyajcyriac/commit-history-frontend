@@ -25,6 +25,10 @@ body{
   background-color: #EFEFEF;
 }
 
+.error_message{
+  color: red;
+}
+
 
 
 

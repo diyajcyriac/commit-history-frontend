@@ -9,7 +9,6 @@ import { FaList } from "react-icons/fa";
 import AddModal from "../modal/addproject_modal";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Logout from "../Buttons/NavbarButton";
-// import { useAuth } from "../../AuthContext";
 import { useAuth } from "../../hooks/useAuth";
 const darkTheme = createTheme({
   palette: {
@@ -20,12 +19,11 @@ const darkTheme = createTheme({
   },
 });
 
-const Navbar = () => {
+const Navbar = ({setIsLoggedIn}) => {
   const {IS_LOGGEDIN} = useAuth();
-  const isLoggedIn = true ;
+  // const isLoggedIn = true ;
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {JSON.stringify(auth)}
       <AppBar position="static">
         <Toolbar>
           <Link
@@ -63,7 +61,7 @@ const Navbar = () => {
               Project Log
             </Link>
           </Typography>
-          {IS_LOGGEDIN && <Logout/>}
+          {IS_LOGGEDIN && <Logout setIsLoggedIn={setIsLoggedIn}/>}
           {IS_LOGGEDIN && <AddModal />}
         </Toolbar>
       </AppBar>

@@ -24,7 +24,7 @@ root.render(
           path="/history/:id"
           element={
             <>
-              <Navbar />
+              {/* <Navbar /> */}
               <History />
             </>
           }

@@ -4,6 +4,7 @@ export const useAuth = ()=>{
     const auth = useContext(AuthContext);
     return {
         ...auth ,
-        IS_LOGGEDIN : !!auth.isLoggedin 
+        IS_LOGGEDIN : auth && !!auth.isLoggedin 
     } ;
 }
+

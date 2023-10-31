@@ -4,7 +4,6 @@ import Search from "./components/search/Search";
 import DataTable from "./components/table/table";
 import Login from "./components/Login/Login";
 import Navbar from "./components/Navbar/Navbar";
-// import { useAuth } from "./AuthContext";
 import { AuthContext } from "./context";
 
 const getToken = () => {
@@ -13,7 +12,6 @@ const getToken = () => {
 };
 
 function App() {
-  // const { setIsLoggedIn,isLoggedIn,setToken,token } = useAuth();
 
   const [query, setQuery] = useState("");
   const [fdata, setData] = useState([]);
@@ -42,12 +40,23 @@ function App() {
 
   useEffect(() => {
     getData();
+    
   }, []);
 
   useEffect(() => {
     setCurrentPage(0);
     setTotalPages(Math.ceil(search(fdata).length / itemsPerPage));
   }, [query, fdata]);
+  
+  const onStorageChangeHandler = ()=>{
+    setIsLoggedIn(false)
+  }
+  useEffect(()=>{
+    document.addEventListener("storageEvent",onStorageChangeHandler);
+    return ()=>{
+      document.addEventListener("storageEvent",onStorageChangeHandler);
+    }
+  },[]);
 
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -66,6 +75,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isLoggedin  }}>
+     
       <Navbar setIsLoggedIn={setIsLoggedIn} />
       <div className="second-container">
         <Search query={query} setQuery={setQuery} />

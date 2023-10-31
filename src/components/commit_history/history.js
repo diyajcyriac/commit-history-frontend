@@ -11,7 +11,14 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Box from "@mui/material/Box";
 import moment from "moment";
-import { Button } from "@mui/material";
+import Navbar from "../Navbar/Navbar";
+import { AuthContext } from "../../context";
+import Login from "../Login/Login";
+
+const getToken = () => {
+  let token = localStorage.getItem("token");
+  return token && token.trim() ? token : false;
+};
 
 const History = () => {
   const [startDate, setStartDate] = useState(null);
@@ -76,8 +83,6 @@ const History = () => {
     }
   }
 
-
-
   useEffect(() => {
     getProjectData();
     getHeaderData();
@@ -104,85 +109,120 @@ const History = () => {
   };
 
   const projectDetails = headerData[0];
+  const onStorageChangeHandler = () => {
+    setIsLoggedIn(false);
+  };
+  useEffect(() => {
+    document.addEventListener("storageEvent", onStorageChangeHandler);
+    return () => {
+      document.addEventListener("storageEvent", onStorageChangeHandler);
+    };
+  }, []);
+  const [isLoggedin, setIsLoggedIn] = useState(getToken());
+
+  if (!isLoggedin) {
+    return (
+      <>
+        <Navbar setIsLoggedIn={setIsLoggedIn} />
+        <Login setIsLoggedIn={setIsLoggedIn} />
+      </>
+    );
+  }
 
   return (
-    <div>
-      <div className="second-container">
-        <Card sx={{ minWidth: 275, paddingTop: 3, paddingBottom: 3 }}>
-          <CardContent>
-            <div style={{ paddingLeft: "30px" }}>
-              {projectDetails && (
-                <>
-                  <Typography variant="h3" component="div">
-                    {projectDetails.project}
-                  </Typography>
-                  <Link
-                    to={projectDetails.link}
-                    style={{
-                      fontSize: "16px",
-                      textDecoration: "none",
-                      color: "blue",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Typography variant="h6" component="div">
-                      {projectDetails.link}
-                    </Typography>
-                  </Link>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <>
+      <AuthContext.Provider value={{ isLoggedin }}>
+        <Navbar setIsLoggedIn={setIsLoggedIn} />
+        <div>
+          <div className="second-container">
+            <Card sx={{ minWidth: 275, paddingTop: 3, paddingBottom: 3 }}>
+              <CardContent>
+                <div style={{ paddingLeft: "30px" }}>
+                  {projectDetails && (
+                    <>
+                      <Typography variant="h3" component="div">
+                        {projectDetails.project}
+                      </Typography>
+                      <Link
+                        to={projectDetails.link}
+                        style={{
+                          fontSize: "16px",
+                          textDecoration: "none",
+                          color: "blue",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Typography variant="h6" component="div">
+                          {projectDetails.link}
+                        </Typography>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-      <div className="second-container">
-        <Box p={3} display="flex" alignItems="center" padding={0}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box marginLeft="auto">
-              <div style={{ paddingRight: "20px" }}>
-                <DatePicker
-                  label="Start Date"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => <input {...params.inputProps} />}
-                  format="dd-MM-yyyy"
-                />
-              </div>
+          <div className="second-container">
+            <Box p={3} display="flex" alignItems="center" padding={0}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Box marginLeft="auto">
+                  <div style={{ paddingRight: "20px" }}>
+                    <DatePicker
+                      label="Start Date"
+                      value={startDate}
+                      onChange={handleStartDateChange}
+                      renderInput={(params) => <input {...params.inputProps} />}
+                      format="dd-MM-yyyy"
+                    />
+                  </div>
+                </Box>
+                <div>
+                  <DatePicker
+                    label="End Date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                    renderInput={(params) => <input {...params.inputProps} />}
+                    format="dd-MM-yyyy"
+                  />
+                </div>
+              </LocalizationProvider>
             </Box>
-            <div>
-              <DatePicker
-                label="End Date"
-                value={endDate}
-                onChange={handleEndDateChange}
-                renderInput={(params) => <input {...params.inputProps} />}
-                format="dd-MM-yyyy"
-              />
-            </div>
-          </LocalizationProvider>
-        </Box>
-        {moment(startDate).isValid() && moment(endDate).isValid() ? (
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            *Data for the given dates
-          </Typography>
-        ) : (
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            *Data for the past week
-          </Typography>
-        )}
+            {moment(startDate).isValid() && moment(endDate).isValid() ? (
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                *Data for the given dates
+              </Typography>
+            ) : (
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
+              >
+                *Data for the past week
+              </Typography>
+            )}
 
-        <HistoryTable items={subset} />
-      </div>
+            <HistoryTable items={subset} />
+          </div>
 
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        handlePageChange={handlePageChange}
-        disablePrevious={disablePrevious}
-        disableNext={disableNext}
-      />
-    </div>
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            handlePageChange={handlePageChange}
+            disablePrevious={disablePrevious}
+            disableNext={disableNext}
+          />
+        </div>
+      </AuthContext.Provider>
+    </>
   );
 };
 
 export default History;
+
+
+
